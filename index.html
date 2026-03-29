@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socio Estratégico | Web Action Console</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Identity Services & APIs -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js" async defer></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i data-lucide="hexagon" class="brand-icon"></i>
+                <span>Socio Estratégico</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active"><i data-lucide="layout-grid"></i> Dashboard</a>
+                <a href="#" class="nav-item"><i data-lucide="target"></i> Metas</a>
+                <a href="#" class="nav-item"><i data-lucide="book-open"></i> Conocimiento</a>
+                <a href="#" class="nav-item"><i data-lucide="calendar"></i> Revisión Semanal</a>
+                <a href="#" class="nav-item" id="nav-settings"><i data-lucide="settings"></i> Configuración</a>
+            </nav>
+            <div class="user-profile">
+                <div class="avatar">U</div>
+                <div class="user-info">
+                    <span class="user-name">Usuario</span>
+                    <span class="user-status">Cero Costo Mode</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content (Focus Board) -->
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <h1 class="page-title">Pizarra de Enfoque</h1>
+                    <p class="page-subtitle">Tu vida en un vistazo. Método CODE activo.</p>
+                </div>
+                <div class="topbar-actions">
+                    <button class="btn btn-icon"><i data-lucide="bell"></i></button>
+                    <button class="btn btn-primary" id="btn-sync"><i data-lucide="refresh-cw"></i> Sincronizar</button>
+                </div>
+            </header>
+
+            <div class="bento-grid">
+                <!-- Inbox Widget (Fast Capture) -->
+                <div class="bento-card inbox-card span-2-col">
+                    <div class="card-header">
+                        <h2><i data-lucide="inbox"></i> Captura Rápida (Inbox)</h2>
+                        <span class="badge">IA Lista</span>
+                    </div>
+                    <div class="card-body">
+                        <textarea id="capture-input" placeholder="¿Qué tienes en mente? (Ej. Aprender sobre inversión, pagar la luz, resumir este libro...)"></textarea>
+                        <div class="capture-actions">
+                            <button class="btn btn-ghost"><i data-lucide="mic"></i></button>
+                            <button class="btn btn-ghost"><i data-lucide="paperclip"></i></button>
+                            <button class="btn btn-primary" id="btn-process"><i data-lucide="sparkles"></i> Procesar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Life Dimensions Widgets -->
+                <!-- Cat 1: Personal Life -->
+                <div class="bento-card dimension-card">
+                    <div class="card-header">
+                        <div class="icon-wrapper personal"><i data-lucide="user"></i></div>
+                        <h3>Vida Personal</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="dimension-item">
+                            <span>Salud y Forma Física</span>
+                            <div class="progress-bar"><div class="progress" style="width: 75%;"></div></div>
+                        </div>
+                        <div class="dimension-item">
+                            <span>Vida Intelectual</span>
+                            <div class="progress-bar"><div class="progress" style="width: 40%;"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cat 2: Inner Life -->
+                <div class="bento-card dimension-card">
+                    <div class="card-header">
+                        <div class="icon-wrapper inner"><i data-lucide="heart"></i></div>
+                        <h3>Vida Interior</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="dimension-item"><span>Vida Emocional</span><div class="progress-bar"><div class="progress" style="width: 60%;"></div></div></div>
+                        <div class="dimension-item"><span>Carácter</span><div class="progress-bar"><div class="progress" style="width: 80%;"></div></div></div>
+                        <div class="dimension-item"><span>Vida Espiritual</span><div class="progress-bar"><div class="progress" style="width: 50%;"></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Cat 3: Relationships -->
+                <div class="bento-card dimension-card span-row-2">
+                    <div class="card-header">
+                        <div class="icon-wrapper relationships"><i data-lucide="users"></i></div>
+                        <h3>Relaciones</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="dimension-item"><span>Vida Amorosa</span><div class="progress-bar"><div class="progress" style="width: 90%;"></div></div></div>
+                        <div class="dimension-item"><span>Familia</span><div class="progress-bar"><div class="progress" style="width: 70%;"></div></div></div>
+                        <div class="dimension-item"><span>Vida Social</span><div class="progress-bar"><div class="progress" style="width: 65%;"></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Cat 4: Business Life -->
+                <div class="bento-card dimension-card">
+                    <div class="card-header">
+                        <div class="icon-wrapper business"><i data-lucide="briefcase"></i></div>
+                        <h3>Vida Empresarial</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="dimension-item"><span>Finanzas</span><div class="progress-bar"><div class="progress" style="width: 45%;"></div></div></div>
+                        <div class="dimension-item"><span>Carrera Profesional</span><div class="progress-bar"><div class="progress" style="width: 85%;"></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Cat 5: Purpose & Life Goals -->
+                <div class="bento-card dimension-card">
+                    <div class="card-header">
+                        <div class="icon-wrapper purpose"><i data-lucide="compass"></i></div>
+                        <h3>Propósito y Visión</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="dimension-item"><span>Calidad de Vida</span><div class="progress-bar"><div class="progress" style="width: 60%;"></div></div></div>
+                        <div class="dimension-item"><span>Visión de Vida</span><div class="progress-bar"><div class="progress" style="width: 30%;"></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity / Timeline -->
+                <div class="bento-card activity-card span-2-col">
+                    <div class="card-header">
+                        <h3><i data-lucide="activity"></i> Actividad Reciente</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="activity-list">
+                            <li>
+                                <div class="activity-icon"><i data-lucide="check-circle"></i></div>
+                                <div class="activity-text">
+                                    <strong>Finanzas:</strong> Tarea "Pagar impuestos" completada.
+                                    <span class="time">Hace 2 horas</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="activity-icon blue"><i data-lucide="file-text"></i></div>
+                                <div class="activity-text">
+                                    <strong>Intelectual:</strong> Nuevo resumen de "Hábitos Atómicos" destilado.
+                                    <span class="time">Ayer</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Processing Modal -->
+    <div class="modal-overlay" id="processing-modal">
+        <div class="modal">
+            <div class="loader"></div>
+            <h3>Desmembramiento Inteligente</h3>
+            <p>La IA está separando la Teoría de la Acción...</p>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal" style="text-align: left; max-width: 500px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin:0;"><i data-lucide="settings"></i> Configuración de Integración</h3>
+                <button class="btn btn-ghost" id="btn-close-settings" style="padding: 4px;"><i data-lucide="x"></i></button>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 0.875rem; color: var(--text-secondary);">Google Client ID (OAuth)</label>
+                <input type="text" id="google-client-id" class="settings-input" placeholder="Ej: 123456789-abc.apps.googleusercontent.com">
+                <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Necesario para conectar Drive, Docs y Sheets. Asegúrate de añadir http://localhost:8080 como origen autorizado.</p>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 24px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 0.875rem; color: var(--text-secondary);">Gemini API Key</label>
+                <input type="password" id="gemini-api-key" class="settings-input" placeholder="Tu API Key de Google AI Studio">
+                <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Para el Desmembramiento Inteligente de información.</p>
+            </div>
+            
+            <button class="btn btn-primary" id="btn-save-settings" style="width: 100%;">Guardar Configuración</button>
+        </div>
+    </div>
+
+    <script src="js/ai.js"></script>
+    <script src="js/google.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
