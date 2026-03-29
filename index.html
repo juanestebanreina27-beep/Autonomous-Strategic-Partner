@@ -25,7 +25,7 @@
                 <a href="#" class="nav-item active"><i data-lucide="layout-grid"></i> Dashboard</a>
                 <a href="#" class="nav-item"><i data-lucide="target"></i> Metas</a>
                 <a href="#" class="nav-item"><i data-lucide="book-open"></i> Conocimiento</a>
-                <a href="#" class="nav-item"><i data-lucide="calendar"></i> Revisión Semanal</a>
+                <a href="#" class="nav-item" id="nav-sunday-sync"><i data-lucide="calendar"></i> Revisión Semanal</a>
                 <a href="#" class="nav-item" id="nav-settings"><i data-lucide="settings"></i> Configuración</a>
             </nav>
             <div class="user-profile">
@@ -170,6 +170,28 @@
             <div class="loader"></div>
             <h3>Desmembramiento Inteligente</h3>
             <p>La IA está separando la Teoría de la Acción...</p>
+        </div>
+    </div>
+
+    <!-- Sunday Sync Modal -->
+    <div class="modal-overlay" id="sunday-sync-modal">
+        <div class="modal" style="max-width: 600px; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin:0;"><i data-lucide="calendar"></i> Revisión Semanal (Sunday Sync)</h3>
+                <button class="btn btn-ghost" id="btn-close-sync-modal" style="padding: 4px;"><i data-lucide="x"></i></button>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">Esta herramienta generará tu estructura de carpetas PARA en Google Drive y te preparará para la semana según la metodología CODE.</p>
+            
+            <div style="background: var(--bg-hover); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <h4 style="margin-top: 0; margin-bottom: 10px;">Acciones de Mantenimiento</h4>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;"><input type="checkbox" id="chk-para"> <span>Crear estructura PARA en Drive (Proyectos, Áreas, Recursos, Archivos)</span></li>
+                    <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;"><input type="checkbox" checked> <span>Analizar Inbox y derivar tareas atrasadas a Sheets</span></li>
+                    <li style="display: flex; align-items: center; gap: 10px;"><input type="checkbox" checked> <span>Recalcular métricas de las 12 dimensiones</span></li>
+                </ul>
+            </div>
+            
+            <button class="btn btn-primary" id="btn-run-sunday-sync" style="width: 100%;"><i data-lucide="zap"></i> Ejecutar Mantenimiento Semanal</button>
         </div>
     </div>
 
