@@ -23,9 +23,9 @@
                 <span>Socio Estratégico</span>
             </div>
             <nav class="nav-menu">
-                <a href="#" class="nav-item active"><i data-lucide="layout-grid"></i> Dashboard</a>
-                <a href="#" class="nav-item"><i data-lucide="target"></i> Metas</a>
-                <a href="#" class="nav-item"><i data-lucide="book-open"></i> Conocimiento</a>
+                <a href="#dashboard" class="nav-item active" data-view="dashboard"><i data-lucide="layout-grid"></i> Dashboard</a>
+                <a href="#metas" class="nav-item" data-view="metas"><i data-lucide="target"></i> Metas</a>
+                <a href="#conocimiento" class="nav-item" data-view="conocimiento"><i data-lucide="book-open"></i> Conocimiento</a>
                 <a href="#" class="nav-item" id="nav-sunday-sync"><i data-lucide="calendar"></i> Revisión Semanal</a>
                 <a href="#" class="nav-item" id="nav-settings"><i data-lucide="settings"></i> Configuración</a>
             </nav>
@@ -42,8 +42,8 @@
         <main class="main-content">
             <header class="topbar">
                 <div>
-                    <h1 class="page-title">Pizarra de Enfoque</h1>
-                    <p class="page-subtitle">Tu vida en un vistazo. Método CODE activo.</p>
+                    <h1 class="page-title" id="main-title">Pizarra de Enfoque</h1>
+                    <p class="page-subtitle" id="main-subtitle">Tu vida en un vistazo. Método CODE activo.</p>
                 </div>
                 <div class="topbar-actions">
                     <button class="btn btn-icon"><i data-lucide="bell"></i></button>
@@ -51,7 +51,10 @@
                 </div>
             </header>
 
-            <div class="bento-grid">
+            <div class="view-container">
+                <!-- Dashboard View -->
+                <div id="view-dashboard" class="view-section active">
+                    <div class="bento-grid">
                 <!-- Inbox Widget (Fast Capture) -->
                 <div class="bento-card inbox-card span-2-col">
                     <div class="card-header">
@@ -165,6 +168,29 @@
                         </ul>
                     </div>
                 </div>
+                    </div>
+                </div>
+
+                <!-- Placeholder Views -->
+                <div id="view-metas" class="view-section">
+                    <div class="bento-card" style="text-align: center; padding: 60px;">
+                        <div class="icon-wrapper personal" style="margin: 0 auto 20px; width: 64px; height: 64px;">
+                            <i data-lucide="target" style="width: 32px; height: 32px;"></i>
+                        </div>
+                        <h2>Módulo de Metas y Objetivos</h2>
+                        <p style="color: var(--text-secondary); margin-top: 10px;">Aquí se mostrará el progreso detallado de tus OKRs y proyectos activos.</p>
+                    </div>
+                </div>
+
+                <div id="view-conocimiento" class="view-section">
+                    <div class="bento-card" style="text-align: center; padding: 60px;">
+                        <div class="icon-wrapper inner" style="margin: 0 auto 20px; width: 64px; height: 64px;">
+                            <i data-lucide="book-open" style="width: 32px; height: 32px;"></i>
+                        </div>
+                        <h2>Bóveda de Conocimiento</h2>
+                        <p style="color: var(--text-secondary); margin-top: 10px;">Tu segundo cerebro. Conectado directamente a tus documentos destilados en Google Drive.</p>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -239,8 +265,7 @@
     <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <script src="js/ai.js"></script>
-    <script src="js/google.js"></script>
-    <script src="js/app.js"></script>
+    <!-- Main Module -->
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>

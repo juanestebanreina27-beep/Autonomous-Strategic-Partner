@@ -1,52 +1,92 @@
+import { Toast } from './toast.js';
+import { AIService } from './ai.js';
+import { GoogleService } from './google.js';
+
 // Initialize Icons
 lucide.createIcons();
-
-// Toast Notification Utility
-const Toast = {
-    show(type, title, message, duration = 5000) {
-        const container = document.getElementById('toast-container');
-        if (!container) return;
-
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-
-        let iconName = 'info';
-        if (type === 'success') iconName = 'check-circle';
-        if (type === 'error') iconName = 'alert-circle';
-        if (type === 'warning') iconName = 'alert-triangle';
-
-        toast.innerHTML = `
-            <i data-lucide="${iconName}" class="toast-icon"></i>
-            <div class="toast-content">
-                <div class="toast-title">${title}</div>
-                <div class="toast-message">${message}</div>
-            </div>
-            <button class="toast-close"><i data-lucide="x"></i></button>
-        `;
-
-        container.appendChild(toast);
-        lucide.createIcons();
-
-        const removeToast = () => {
-            toast.classList.add('hiding');
-            toast.addEventListener('animationend', () => {
-                toast.remove();
-            });
-        };
-
-        toast.querySelector('.toast-close').addEventListener('click', removeToast);
-
-        if (duration > 0) {
-            setTimeout(removeToast, duration);
-        }
-    }
-};
 
 document.addEventListener('DOMContentLoaded', () => {
     const btnProcess = document.getElementById('btn-process');
     const captureInput = document.getElementById('capture-input');
     const modal = document.getElementById('processing-modal');
-    
+    const activityList = document.querySelector('.activity-list');
+
+    // UI Function to add recent activity dynamically
+    const addRecentActivity = (dimension, text, category) => {
+        if (!activityList) return;
+
+        let iconName = 'check-circle';
+        let colorClass = '';
+
+        if (category.toLowerCase().includes('intelectual') || category.toLowerCase().includes('teoria')) {
+            iconName = 'file-text';
+            colorClass = 'blue';
+        }
+
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <div class="activity-icon ${colorClass}"><i data-lucide="${iconName}"></i></div>
+            <div class="activity-text">
+                <strong>${dimension}:</strong> ${text}
+                <span class="time">Justo ahora</span>
+            </div>
+        `;
+        activityList.prepend(li);
+
+        // Remove old items if list gets too long
+        if (activityList.children.length > 5) {
+            activityList.lastElementChild.remove();
+        }
+        lucide.createIcons();
+    };
+
+    // SPA Routing Logic
+    const navItems = document.querySelectorAll('.nav-item[data-view]');
+    const views = document.querySelectorAll('.view-section');
+    const mainTitle = document.getElementById('main-title');
+    const mainSubtitle = document.getElementById('main-subtitle');
+
+    const viewMeta = {
+        'dashboard': { title: 'Pizarra de Enfoque', subtitle: 'Tu vida en un vistazo. Método CODE activo.' },
+        'metas': { title: 'Gestión de Metas', subtitle: 'Alineando tus acciones con tus 12 dimensiones.' },
+        'conocimiento': { title: 'Base de Conocimiento', subtitle: 'Tu segundo cerebro interactivo.' }
+    };
+
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetViewId = item.getAttribute('data-view');
+
+            // Update Navigation
+            navItems.forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+
+            // Update Views
+            views.forEach(view => {
+                view.classList.remove('active');
+                if (view.id === `view-${targetViewId}`) {
+                    view.classList.add('active');
+                }
+            });
+
+            // Update Headers
+            if (viewMeta[targetViewId]) {
+                mainTitle.textContent = viewMeta[targetViewId].title;
+                mainSubtitle.textContent = viewMeta[targetViewId].subtitle;
+            }
+
+            // Update URL hash without jumping
+            history.pushState(null, null, `#${targetViewId}`);
+        });
+    });
+
+    // Check initial hash on load
+    if (window.location.hash) {
+        const hashView = window.location.hash.replace('#', '');
+        const targetNav = document.querySelector(`.nav-item[data-view="${hashView}"]`);
+        if (targetNav) targetNav.click();
+    }
+
     // Init Google Service if Client ID is configured
     setTimeout(() => {
         const savedClientId = localStorage.getItem('googleClientId');
@@ -95,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ]);
                     console.log("Acción añadida a Google Sheets exitosamente.");
                     Toast.show('success', '¡Acción Capturada!', `Se guardó "${result.titulo}" en tu hoja de ruta.`);
+                    addRecentActivity(result.dimension, `Tarea "${result.titulo}" enrutada a Sheets.`, result.categoria);
                 } catch(e) {
                     console.warn(e.message);
                     if(!e.message.includes('Solicitando')) {
@@ -107,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const doc = await GoogleService.createDocument(result.titulo, result.contenido);
                     console.log("Documento de teoría creado en Google Docs:", doc);
                     Toast.show('success', '¡Conocimiento Destilado!', `Se creó el documento "${result.titulo}" en Google Docs.`);
+                    addRecentActivity(result.dimension, `Conocimiento "${result.titulo}" destilado a Docs.`, result.categoria);
                 } catch(e) {
                     console.warn(e.message);
                     if(!e.message.includes('Solicitando')) {
@@ -141,15 +183,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Sync / Login Button
+    // Sync / Login Button & Connection State
     const btnSync = document.getElementById('btn-sync');
+
+    // Listen for Google Auth Success custom event
+    document.addEventListener('google-auth-success', () => {
+        if (btnSync) {
+            btnSync.innerHTML = '<i data-lucide="cloud-lightning"></i> Conectado a Workspace';
+            btnSync.style.backgroundColor = 'rgba(16, 163, 127, 0.2)';
+            btnSync.style.color = '#10b981';
+            btnSync.style.border = '1px solid #10b981';
+            lucide.createIcons();
+        }
+        Toast.show('success', 'Sesión Iniciada', 'Tu Socio Estratégico ya está conectado a Google Workspace.');
+    });
+
     if (btnSync) {
         btnSync.addEventListener('click', () => {
+            if (GoogleService.isLoggedIn()) {
+                Toast.show('info', 'Estado de Conexión', 'Ya estás conectado a Google Workspace.');
+                return;
+            }
             try {
                 // Only attempt login if client ID exists
                 if (!localStorage.getItem('googleClientId')) {
                     Toast.show('warning', 'Configuración Pendiente', 'Por favor, configura tu Google Client ID primero.');
-                    settingsModal.classList.add('active');
+                    if (settingsModal) settingsModal.classList.add('active');
                     return;
                 }
                 GoogleService.login();

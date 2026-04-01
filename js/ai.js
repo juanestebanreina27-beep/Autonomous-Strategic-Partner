@@ -1,4 +1,4 @@
-const AIService = {
+export const AIService = {
     async processThought(text, apiKey) {
         if (!apiKey) throw new Error("Falta la API Key de Gemini en Configuración.");
         

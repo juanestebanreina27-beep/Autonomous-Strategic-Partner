@@ -1,4 +1,4 @@
-const GoogleService = {
+export const GoogleService = {
     tokenClient: null,
     accessToken: null,
 
