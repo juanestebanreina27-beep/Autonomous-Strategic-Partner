@@ -46,13 +46,21 @@ const GoogleService = {
                 body: JSON.stringify({ title: title })
             });
             
-            if (!createRes.ok) throw new Error("Error creando documento de Google Docs");
+            if (createRes.status === 401 || createRes.status === 403) {
+                 this.login();
+                 throw new Error("Solicitando autenticación con Google. Tu sesión expiró o faltan permisos.");
+            }
+            if (!createRes.ok) {
+                 const errText = await createRes.text();
+                 console.error("Docs API Error:", errText);
+                 throw new Error(`Error API Docs (${createRes.status}). Revisa la consola.`);
+            }
             
             const docInfo = await createRes.json();
             
             // Si hay contenido, insertarlo en el documento
             if (content) {
-                await fetch(`https://docs.googleapis.com/v1/documents/${docInfo.documentId}:batchUpdate`, {
+                const updateRes = await fetch(`https://docs.googleapis.com/v1/documents/${docInfo.documentId}:batchUpdate`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${this.accessToken}`,
@@ -67,10 +75,19 @@ const GoogleService = {
                         }]
                     })
                 });
+
+                if (!updateRes.ok) {
+                    const errText = await updateRes.text();
+                    console.error("Docs BatchUpdate Error:", errText);
+                    throw new Error("El documento fue creado pero hubo un error insertando el texto.");
+                }
             }
             return docInfo;
             
         } catch (error) {
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                 throw new Error("Problema de conexión de red al intentar crear el documento de Google.");
+            }
             console.error("Error en createDocument:", error);
             throw error;
         }
@@ -94,9 +111,27 @@ const GoogleService = {
                 })
             });
             
-            if (!res.ok) throw new Error("Error añadiendo datos a Google Sheets");
+            if (res.status === 401 || res.status === 403) {
+                 this.login();
+                 throw new Error("Solicitando autenticación con Google. Tu sesión expiró o faltan permisos.");
+            }
+            if (res.status === 404) {
+                 throw new Error(`No se encontró el archivo Google Sheets con el ID proporcionado o el nombre de pestaña es incorrecto.`);
+            }
+            if (res.status === 400) {
+                 throw new Error("El rango proporcionado parece ser inválido, o el archivo no es un Google Sheet compatible.");
+            }
+            if (!res.ok) {
+                 const errText = await res.text();
+                 console.error("Sheets API Error:", errText);
+                 throw new Error(`Error API Sheets (${res.status}). Revisa la consola.`);
+            }
+
             return await res.json();
         } catch (error) {
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                 throw new Error("Problema de conexión de red al intentar comunicarse con Google Sheets.");
+            }
             console.error("Error en appendToSheet:", error);
             throw error;
         }

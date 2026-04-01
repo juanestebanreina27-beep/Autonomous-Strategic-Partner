@@ -27,27 +27,44 @@ Devuelve SOLO un JSON puro (sin etiquetas markdown ni comillas bloque) con este 
         const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
         console.log("Testeando conexión al endpoint Gemini...", url.substring(0, 80) + "...");
         
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: { response_mime_type: "application/json" }
-            })
-        });
-
-        if (!response.ok) {
-            const errText = await response.text();
-            console.error("Detalles del error Gemini:", errText);
-            throw new Error(`Error ${response.status}: La llave puede estar mal escrita o falta recargar.`);
-        }
-        const data = await response.json();
-        
         try {
-            const jsonText = data.candidates[0].content.parts[0].text;
-            return JSON.parse(jsonText);
-        } catch (e) {
-            throw new Error("El formato devuelto por Gemini no fue un JSON válido.");
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: { response_mime_type: "application/json" }
+                })
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                console.error("Detalles del error Gemini:", errText);
+                if (response.status === 400) throw new Error("API Key inválida o mal formada. Revísala en Configuración.");
+                if (response.status === 403) throw new Error("Permisos denegados para la API Key. Verifica en Google AI Studio.");
+                if (response.status === 429) throw new Error("Límite de peticiones excedido (Rate Limit). Intenta de nuevo más tarde.");
+                throw new Error(`Error ${response.status}: Ha ocurrido un problema al conectar con Gemini.`);
+            }
+
+            const data = await response.json();
+
+            if (!data.candidates || data.candidates.length === 0) {
+                throw new Error("La IA no devolvió ninguna respuesta válida.");
+            }
+
+            try {
+                const jsonText = data.candidates[0].content.parts[0].text;
+                return JSON.parse(jsonText);
+            } catch (e) {
+                console.error("Error parseando JSON de Gemini:", e);
+                throw new Error("La IA no pudo estructurar la respuesta correctamente. Intenta formularlo distinto.");
+            }
+
+        } catch (error) {
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                 throw new Error("Problema de conexión a internet o el servidor está bloqueado (CORS).");
+            }
+            throw error; // Re-throw other custom errors
         }
     }
 };

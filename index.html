@@ -12,6 +12,7 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://apis.google.com/js/api.js" async defer></script>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/toast.css">
 </head>
 <body>
     <div class="app-container">
@@ -62,7 +63,11 @@
                         <div class="capture-actions">
                             <button class="btn btn-ghost"><i data-lucide="mic"></i></button>
                             <button class="btn btn-ghost"><i data-lucide="paperclip"></i></button>
-                            <button class="btn btn-primary" id="btn-process"><i data-lucide="sparkles"></i> Procesar</button>
+                            <button class="btn btn-primary" id="btn-process">
+                                <i data-lucide="sparkles"></i>
+                                <span>Procesar</span>
+                                <div class="btn-spinner" style="display: none; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -209,15 +214,30 @@
                 <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Necesario para conectar Drive, Docs y Sheets. Asegúrate de añadir http://localhost:8080 como origen autorizado.</p>
             </div>
             
-            <div class="form-group" style="margin-bottom: 24px;">
+            <div class="form-group" style="margin-bottom: 16px;">
                 <label style="display: block; margin-bottom: 8px; font-size: 0.875rem; color: var(--text-secondary);">Gemini API Key</label>
                 <input type="password" id="gemini-api-key" class="settings-input" placeholder="Tu API Key de Google AI Studio">
                 <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">Para el Desmembramiento Inteligente de información.</p>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 0.875rem; color: var(--text-secondary);">ID de Google Sheet</label>
+                <input type="text" id="google-sheet-id" class="settings-input" placeholder="Ej: 1n4YBwFQ3tj3sOWINAqyPPPKwiMp8IZh...">
+                <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">El ID de la hoja de cálculo donde se guardarán las Acciones.</p>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 24px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 0.875rem; color: var(--text-secondary);">Nombre de la Hoja (Pestaña)</label>
+                <input type="text" id="google-sheet-name" class="settings-input" placeholder="Ej: Hoja 1">
+                <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">El nombre exacto de la pestaña dentro del documento.</p>
             </div>
             
             <button class="btn btn-primary" id="btn-save-settings" style="width: 100%;">Guardar Configuración</button>
         </div>
     </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
 
     <script src="js/ai.js"></script>
     <script src="js/google.js"></script>
